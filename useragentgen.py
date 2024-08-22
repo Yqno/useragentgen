@@ -7,32 +7,37 @@ ua = UserAgent()
 choice = input("Would you like a specific User-Agent or a random one? (Enter 'specific' or 'random'): ").strip().lower()
 
 if choice == 'specific':
-    # Specific OS, browser, and WebKit options
-    os_choice = input("Choose your OS (windows, linux, mac): ").strip().lower()
-    browser_choice = input("Choose your browser (chrome, firefox, safari): ").strip().lower()
+    # Specific OS and browser options
+    device_type = input("Do you want a mobile or desktop user-agent? (Enter 'mobile' or 'desktop'): ").strip().lower()
 
-    if os_choice == 'windows':
-        os = ua.windows
-    elif os_choice == 'linux':
-        os = ua.linux
-    elif os_choice == 'mac':
-        os = ua.macos
+    if device_type == 'mobile':
+        os_choice = input("Choose your mobile OS (ios, android): ").strip().lower()
+        browser_choice = input("Choose your mobile browser (chrome, safari, firefox): ").strip().lower()
+
+        if os_choice == 'ios':
+            if browser_choice == 'safari':
+                user_agent = ua.safari  # iOS Safari
+            else:
+                print("Invalid browser choice, defaulting to random iOS user-agent...")
+                user_agent = ua.random
+        elif os_choice == 'android':
+            if browser_choice == 'chrome':
+                user_agent = ua.chrome  # Android Chrome
+            elif browser_choice == 'firefox':
+                user_agent = ua.firefox  # Android Firefox
+            else:
+                print("Invalid browser choice, generating a random Android user-agent...")
+                user_agent = ua.random
+        else:
+            print("Invalid OS, generating a random mobile user-agent...")
+            user_agent = ua.random
+
+    elif device_type == 'desktop':
+        user_agent = ua.random  # For desktop, use random user-agent (more options)
+
     else:
-        print("Invalid OS choice, defaulting to random.")
-        os = ua.platform
-
-    if browser_choice == 'chrome':
-        browser = ua.chrome
-    elif browser_choice == 'firefox':
-        browser = ua.firefox
-    elif browser_choice == 'safari':
-        browser = ua.safari
-    else:
-        print("Invalid browser choice, defaulting to random.")
-        browser = ua.browser
-
-    # In this case, we do not separately choose WebKit; it's included in the generated browser string
-    user_agent = f"Mozilla/5.0 ({os}) {browser}"
+        print("Invalid device type, generating a random user-agent...")
+        user_agent = ua.random
 
 elif choice == 'random':
     # Randomly generate the entire User-Agent
@@ -40,7 +45,7 @@ elif choice == 'random':
 
 else:
     # Handle invalid input by defaulting to a random User-Agent
-    print("Invalid choice, generating a random User-Agent.")
+    print("Invalid choice, generating a random User-Agent...")
     user_agent = ua.random
 
 # Output the User-Agent string
